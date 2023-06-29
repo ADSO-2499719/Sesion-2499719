@@ -1,0 +1,141 @@
+-- CONSTRAINTS fk_country_continent_id_continent_id
+
+-- Eliminar bd
+DROP DATABASE send_product;
+
+-- Crear bd
+CREATE DATABASE send_product;
+
+-- Usar 
+USE send_product;
+
+-- Crear entities
+CREATE TABLE continent(
+	id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, 
+	code VARCHAR(20) NOT NULL,
+	name VARCHAR(80) NOT NULL,
+	state BOOLEAN NOT NULL,
+	creation_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	update_at TIMESTAMP NULL,
+	delete_at TIMESTAMP NULL
+);
+
+CREATE TABLE country(
+	id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, 
+	code VARCHAR(20) NOT NULL,
+	name VARCHAR(80) NOT NULL,
+	state BOOLEAN NOT NULL,
+	continent_id INT,
+	creation_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	update_at TIMESTAMP NULL,
+	delete_at TIMESTAMP NULL,
+	FOREIGN KEY (continent_id) REFERENCES continent(id)
+);
+
+CREATE TABLE estate(
+	id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, 
+	code VARCHAR(20) NOT NULL,
+	name VARCHAR(80) NOT NULL,
+	state BOOLEAN NOT NULL,
+	country_id INT,
+	creation_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	update_at TIMESTAMP NULL,
+	delete_at TIMESTAMP NULL,
+	FOREIGN KEY (country_id) REFERENCES country(id)
+);
+
+CREATE TABLE city(
+	id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, 
+	code VARCHAR(20) NOT NULL,
+	name VARCHAR(80) NOT NULL,
+	state BOOLEAN NOT NULL,
+	estate_id INT,
+	creation_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	update_at TIMESTAMP NULL,
+	delete_at TIMESTAMP NULL,
+	FOREIGN KEY (estate_id) REFERENCES estate(id)
+);
+
+CREATE TABLE commune(
+	id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, 
+	code VARCHAR(20) NOT NULL,
+	name VARCHAR(80) NOT NULL,
+	state BOOLEAN NOT NULL,
+	city_id INT,
+	creation_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	update_at TIMESTAMP NULL,
+	delete_at TIMESTAMP NULL,
+	FOREIGN KEY (city_id) REFERENCES city(id)
+);
+
+CREATE TABLE quarter(
+	id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, 
+	code VARCHAR(20) NOT NULL,
+	name VARCHAR(80) NOT NULL,
+	state BOOLEAN NOT NULL,
+	commune_id INT,
+	creation_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	update_at TIMESTAMP NULL,
+	delete_at TIMESTAMP NULL,
+	FOREIGN KEY (commune_id) REFERENCES commune(id)
+);
+
+CREATE TABLE people(
+	id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, 	
+	first_name VARCHAR(40) NOT NULL,
+	second_name VARCHAR(40) NOT NULL,
+	first_lastname VARCHAR(40) NOT NULL,
+	second_lastname VARCHAR(40) NOT NULL,
+	mail VARCHAR(40) NOT NULL,
+	address VARCHAR(40) NOT NULL,
+	phone VARCHAR(40) NOT NULL,
+	quarter_id INT,
+	state BOOLEAN NOT NULL,	
+	creation_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	update_at TIMESTAMP NULL,
+	delete_at TIMESTAMP NULL,
+	FOREIGN KEY (quarter_id) REFERENCES quarter(id)
+);
+
+CREATE TABLE role(
+	id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, 
+	code VARCHAR(20) NOT NULL,
+	name VARCHAR(80) NOT NULL,
+	state BOOLEAN NOT NULL,
+	creation_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	update_at TIMESTAMP NULL,
+	delete_at TIMESTAMP NULL
+);
+
+CREATE TABLE user(
+	id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, 	
+	user VARCHAR(40) NOT NULL,
+	pwd VARCHAR(100) NOT NULL,
+	people_id INT,
+	role_id INT,
+	state BOOLEAN NOT NULL,	
+	creation_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	update_at TIMESTAMP NULL,
+	delete_at TIMESTAMP NULL,
+	FOREIGN KEY (people_id) REFERENCES people(id),
+	FOREIGN KEY (role_id) REFERENCES role(id)
+);
+
+CREATE TABLE send(
+	id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, 	
+	code VARCHAR(20) NOT NULL,
+	name VARCHAR(80) NOT NULL,
+	description VARCHAR(40) NOT NULL,
+	client_id INT,
+	seller_id INT,
+	quarter_get_id INT,
+	quarter_send_id INT,
+	state BOOLEAN NOT NULL,	
+	creation_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	update_at TIMESTAMP NULL,
+	delete_at TIMESTAMP NULL,
+	FOREIGN KEY (seller_id) REFERENCES user(id),
+	FOREIGN KEY (client_id) REFERENCES user(id),
+	FOREIGN KEY (quarter_get_id) REFERENCES quarter(id),
+	FOREIGN KEY (quarter_send_id) REFERENCES quarter(id)
+);
